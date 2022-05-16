@@ -11,6 +11,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:carrier_info/carrier_info.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:devicelocale/devicelocale.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,11 +77,12 @@ extension FirebaseProvidedData on Map<FirebaseField, Pair> {
 class CustomRouter {
   final Map<FirebaseField, Pair> firebaseFields;
   final Map<ResponseField, String> responseField;
+  final bool isDebug;
 
   late Map<FirebaseField, Pair> firebaseProvidedData;
   late LocalSettings localSettings;
 
-  CustomRouter(this.firebaseFields, this.responseField);
+  CustomRouter(this.firebaseFields, this.responseField, this.isDebug);
 
   Future<Map<String, String>?> fetchAppsFlyerData(String key) async {
     var af = AppsflyerSdk(AppsFlyerOptions(afDevKey: key));
@@ -168,10 +170,12 @@ class CustomRouter {
   Future<Map<String, String>?> collectDataForHttpRequest() async {
     final httpRequestData = <String, String>{};
 
-    // localSettings = await LocalSettings.create();
-    // if(localSettings.isInitiated()) {
-    //   return null;
-    // }
+    await Firebase.initializeApp();
+
+    localSettings = await LocalSettings.create();
+    if(localSettings.isInitiated() && !isDebug) {
+      return null;
+    }
 
     firebaseProvidedData = await FirebaseDatabase.instance.mapProvidedData(firebaseFields);
     if (!firebaseProvidedData.isAllRequiredFieldsExists()) {
