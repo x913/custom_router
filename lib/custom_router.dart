@@ -21,6 +21,8 @@ import 'package:custom_router/enums.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
+export 'screens/splash_screen.dart';
+
 extension on Enum {
   String asString() {
     return toString().split('.').last;
