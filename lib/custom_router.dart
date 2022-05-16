@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:carrier_info/carrier_info.dart';
@@ -12,6 +13,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_sdk/flutter_facebook_sdk.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -259,6 +261,24 @@ class CustomRouter {
         MaterialPageRoute(builder: (_) => webViewBuilder(url)),
           (router) => false
       );
+    }
+  }
+
+  Future<void> initializeTransparancyFramework() async {
+    if(Platform.isIOS) {
+      try {
+        final TrackingStatus status =
+        await AppTrackingTransparency.trackingAuthorizationStatus;
+  
+        if (status == TrackingStatus.notDetermined) {
+          print("AAA status not determined");
+          await Future.delayed(const Duration(milliseconds: 200));
+          final TrackingStatus status =
+          await AppTrackingTransparency.requestTrackingAuthorization();
+        }
+      } on PlatformException {
+        print("AAA platform exception thrown");
+      }
     }
   }
 
