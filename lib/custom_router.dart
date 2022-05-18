@@ -74,18 +74,35 @@ extension FirebaseProvidedData on Map<FirebaseField, Pair> {
   }
 }
 
+// usage example
+// void main() {
+//   CustomRouter( 
+//     {
+//       FirebaseField.url1: Pair("bused", ""),
+//       FirebaseField.url2: Pair("robes", "")
+//     },
+//     {
+//       ResponseField.url1: "kicks",
+//       ResponseField.url2: "boned",
+//     }, {
+//       SdkKey.appsflyer: "",
+//       SdkKey.appsflyer_app_id: "1354345345",
+//       SdkKey.onesignal: "sgdfgdsfg",
+//     });
+// }
+
 class CustomRouter {
   final Map<FirebaseField, Pair> firebaseFields;
   final Map<ResponseField, String> responseField;
-  final bool isDebug;
+  final Map<SdkKey, String> sdkKeys;
 
   late Map<FirebaseField, Pair> firebaseProvidedData;
   late LocalSettings localSettings;
 
-  CustomRouter(this.firebaseFields, this.responseField, this.isDebug);
+  CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
-  Future<Map<String, String>?> fetchAppsFlyerData(String key) async {
-    var af = AppsflyerSdk(AppsFlyerOptions(afDevKey: key));
+  Future<Map<String, String>?> fetchAppsFlyerData(String key, String appId) async {
+    var af = AppsflyerSdk(AppsFlyerOptions(afDevKey: key, appId: appId, showDebug: true));
     af.initSdk(registerConversionDataCallback: true);
 
     Completer<Map<String, dynamic>?> completer =
@@ -114,8 +131,7 @@ class CustomRouter {
         }
       });
     } else {
-      print(
-          "AAA AF onInstallConversionData response is null, maybe timed out?");
+      print("AAA AF onInstallConversionData response is null, maybe timed out?");
     }
 
     return result;
@@ -173,7 +189,7 @@ class CustomRouter {
     await Firebase.initializeApp();
 
     localSettings = await LocalSettings.create();
-    if(localSettings.isInitiated() && !isDebug) {
+    if(localSettings.isInitiated()) {
       return null;
     }
 
@@ -192,18 +208,26 @@ class CustomRouter {
 
 
     // launch appsflyer
-    var appsFlyerResponse = await fetchAppsFlyerData(
-        firebaseProvidedData.getValue(FirebaseField.appsflyer));
-    if (appsFlyerResponse != null) {
-      print("AAA appsFlyerResponse: $appsFlyerResponse");
-      httpRequestData.addAll(appsFlyerResponse);
+    if(sdkKeys.containsKey(SdkKey.appsflyer) && sdkKeys.containsKey(SdkKey.appsflyer_app_id)) {
+      if( (sdkKeys[SdkKey.appsflyer] ?? '').isNotEmpty &&  (sdkKeys[SdkKey.appsflyer_app_id] ?? '').isNotEmpty) {
+        print("AAA appsflyer launching...");
+        var appsFlyerResponse = await fetchAppsFlyerData(sdkKeys[SdkKey.appsflyer] ?? '', sdkKeys[SdkKey.appsflyer_app_id] ?? '');
+        if (appsFlyerResponse != null) {
+          print("AAA appsFlyerResponse: $appsFlyerResponse");
+          httpRequestData.addAll(appsFlyerResponse);
+        }
+      } else {
+        print("AAA appsflyer keys are exists but empty?");
+      }
+    } else {
+      print("AAA appsflyer keys are not defined");
     }
 
+
     // launch onesignal
-    var osKey = firebaseProvidedData.getValue(FirebaseField.onesignal);
-    if(osKey.isNotEmpty) {
-      print("AAA launch onesignal");
-      OneSignal.shared.setAppId(osKey);
+    if(sdkKeys.containsKey(SdkKey.onesignal) && (sdkKeys[SdkKey.onesignal] ?? '').isNotEmpty) {
+      print("AAA launch onesignal ${sdkKeys[SdkKey.onesignal]}");
+      OneSignal.shared.setAppId(sdkKeys[SdkKey.onesignal] ?? '');
       await OneSignal.shared.promptUserForPushNotificationPermission();
     }
 

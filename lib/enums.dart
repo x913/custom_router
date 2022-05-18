@@ -1,6 +1,10 @@
 enum Preference { initiated, webViewUrl, overrideUrl }
 
-enum FirebaseField { facebook, appsflyer, onesignal, url1, url2 }
+enum FirebaseField { url1, url2 }
+
+enum SdkKey {
+  facebook, appsflyer, onesignal, appsflyer_app_id
+}
 
 enum ResponseField {
   url1,
