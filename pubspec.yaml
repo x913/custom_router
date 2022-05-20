@@ -10,7 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_facebook_sdk: ^1.0.0
+  flutter_facebook_sdk:
+    git:
+      url: https://github.com/Tetsukick/flutter_facebook_sdk
+  # flutter_facebook_sdk: ^1.0.0
+
   appsflyer_sdk: ^6.5.2+2
   onesignal_flutter: ^3.0.0
   app_tracking_transparency: ^2.0.2+4
