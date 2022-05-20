@@ -11,8 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_facebook_sdk:
-    path: flutter_facebook_sdk
+  #flutter_facebook_sdk:
+  #  path: flutter_facebook_sdk
   # flutter_facebook_sdk: ^1.0.0
 
   appsflyer_sdk: ^6.5.2+2
