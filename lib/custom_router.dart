@@ -21,7 +21,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:custom_router/local_settings.dart';
 import 'package:custom_router/pair.dart';
 import 'package:custom_router/enums.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -118,8 +118,8 @@ class CustomRouter {
 
     var appsUID = await af.getAppsFlyerUID() ?? "";
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('uid', appsUID);
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('uid', appsUID);
 
     var result = <String, String>{
       // we always needs appsflyerUid
@@ -178,8 +178,8 @@ class CustomRouter {
 
     final mno = await CarrierInfo.carrierName.catchError((err) => '');
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('locale', locale ?? "");
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.setString('locale', locale ?? "");
 
     return {
       CollectableFields.battery_level.asString(): batteryLevel.toString(),
