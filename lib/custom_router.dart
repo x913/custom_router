@@ -15,12 +15,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_sdk/flutter_facebook_sdk.dart';
+// import 'package:flutter_facebook_sdk/flutter_facebook_sdk.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:custom_router/local_settings.dart';
 import 'package:custom_router/pair.dart';
 import 'package:custom_router/enums.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
@@ -115,11 +116,17 @@ class CustomRouter {
     var responseFromAppsFlyerConversion = await completer.future
         .timeout(const Duration(seconds: 5), onTimeout: () => null);
 
+    var appsUID = await af.getAppsFlyerUID() ?? "";
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('uid', appsUID);
+
     var result = <String, String>{
       // we always needs appsflyerUid
-      CollectableFields.appsflyer_id.asString():
-          await af.getAppsFlyerUID() ?? ""
+      CollectableFields.appsflyer_id.asString(): appsUID
     };
+
+
 
     if (responseFromAppsFlyerConversion != null) {
       responseFromAppsFlyerConversion.forEach((key, value) {
@@ -170,6 +177,9 @@ class CustomRouter {
     }
 
     final mno = await CarrierInfo.carrierName.catchError((err) => '');
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locale', locale ?? "");
 
     return {
       CollectableFields.battery_level.asString(): batteryLevel.toString(),
