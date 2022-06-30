@@ -86,7 +86,7 @@ class _WebViewPageState extends State<WebViewPage> {
                             console.log("AAA back pressed");
                             if(history.length > 1) {
                               window.history.go(-1);
-                            ]
+                            }
                         });
                         
                         forward.addEventListener("touchstart", () => {
