@@ -187,7 +187,7 @@ class CustomRouter {
       CollectableFields.battery_level.asString(): batteryLevel.toString(),
       CollectableFields.phone_brand.asString(): deviceInfo,
       CollectableFields.locale.asString(): locale.toString(),
-      CollectableFields.vpn.asString(): isVpnActive.toString()
+      CollectableFields.vpn.asString(): isVpnActive.toString(),
       CollectableFields.android_id.asString(): const Uuid().v1(),
       CollectableFields.charging.asString(): batteryCharging.toString(),
       CollectableFields.InstallReferrer.asString(): "",
