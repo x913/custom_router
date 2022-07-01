@@ -312,7 +312,7 @@ class CustomRouter {
   
         if (status == TrackingStatus.notDetermined) {
           print("AAA status not determined");
-          await Future.delayed(const Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 1000));
           final TrackingStatus status =
           await AppTrackingTransparency.requestTrackingAuthorization();
         }
