@@ -24,6 +24,7 @@ import 'package:custom_router/enums.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:check_vpn_connection/check_vpn_connection.dart';
 
 export 'screens/splash_screen.dart';
 
@@ -177,6 +178,7 @@ class CustomRouter {
     }
 
     final mno = await CarrierInfo.carrierName.catchError((err) => '');
+    final isVpnActive = await CheckVpnConnection.isVpnActive();
 
     // final prefs = await SharedPreferences.getInstance();
     // await prefs.setString('locale', locale ?? "");
@@ -185,7 +187,7 @@ class CustomRouter {
       CollectableFields.battery_level.asString(): batteryLevel.toString(),
       CollectableFields.phone_brand.asString(): deviceInfo,
       CollectableFields.locale.asString(): locale.toString(),
-      CollectableFields.vpn.asString(): "false",
+      CollectableFields.vpn.asString(): isVpnActive.toString()
       CollectableFields.android_id.asString(): const Uuid().v1(),
       CollectableFields.charging.asString(): batteryCharging.toString(),
       CollectableFields.InstallReferrer.asString(): "",

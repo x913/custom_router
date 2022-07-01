@@ -14,7 +14,7 @@ dependencies:
   #flutter_facebook_sdk:
   #  path: flutter_facebook_sdk
   # flutter_facebook_sdk: ^1.0.0
-
+	
   appsflyer_sdk: ^6.5.2+2
   onesignal_flutter: ^3.0.0
   app_tracking_transparency: ^2.0.2+4
@@ -31,6 +31,7 @@ dependencies:
   advertising_id: ^2.2.0
   url_launcher: ^6.1.2
   uuid: ^3.0.6
+  check_vpn_connection: ^0.0.2
 
 dev_dependencies:
   flutter_test:
