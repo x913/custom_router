@@ -199,6 +199,7 @@ class CustomRouter {
     final httpRequestData = <String, String>{};
 
     try {
+        print("AAA initializing firebase with options");
         await Firebase.initializeApp(
           options: const FirebaseOptions(
             apiKey: "AIzaSyD3X7tzTN8DaUPBQudnLABo1Q-TcVHMd_U", 
@@ -207,7 +208,7 @@ class CustomRouter {
             projectId: "green-clover-bar")
         );
     } on Exception catch(e) {
-        print("AAA exception on initializeApp ${e}");
+        print("AAA exception on initializeApp (1) ${e}");
     }
 
     localSettings = await LocalSettings.create();
