@@ -198,7 +198,11 @@ class CustomRouter {
   Future<Map<String, String>?> collectDataForHttpRequest() async {
     final httpRequestData = <String, String>{};
 
-    await Firebase.initializeApp();
+    try {
+        await Firebase.initializeApp();
+    } on Exception catch(e) {
+        print("AAA exception on initializeApp ${e}");
+    }
 
     localSettings = await LocalSettings.create();
     if(localSettings.isInitiated()) {
