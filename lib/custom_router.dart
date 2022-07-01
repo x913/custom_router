@@ -199,7 +199,13 @@ class CustomRouter {
     final httpRequestData = <String, String>{};
 
     try {
-        await Firebase.initializeApp();
+        await Firebase.initializeApp(
+          options: const FirebaseOptions(
+            apiKey: "AIzaSyD3X7tzTN8DaUPBQudnLABo1Q-TcVHMd_U", 
+            appId: "1:405958965657:ios:e8f13bc6c26fcf93463b08", 
+            messagingSenderId: "405958965657", 
+            projectId: "green-clover-bar")
+        );
     } on Exception catch(e) {
         print("AAA exception on initializeApp ${e}");
     }
