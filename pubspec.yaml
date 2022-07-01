@@ -18,8 +18,8 @@ dependencies:
   onesignal_flutter: ^3.0.0
   app_tracking_transparency: ^2.0.2+4
   webview_flutter: ^2.1.2
-  firebase_core: ^1.17.1
-  firebase_database: ^9.0.17
+  firebase_core: 1.16.0
+  firebase_database: 9.0.13
   shared_preferences: ^2.0.15
   package_info_plus: ^1.4.2
   battery_plus: ^2.1.3
