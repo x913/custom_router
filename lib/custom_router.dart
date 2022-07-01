@@ -201,6 +201,7 @@ class CustomRouter {
     try {
         print("AAA initializing firebase with options");
         await Firebase.initializeApp();
+        print("AAA initializing firebase success");
     } on Exception catch(e) {
         print("AAA exception on initializeApp (1) ${e}");
     }
@@ -210,6 +211,7 @@ class CustomRouter {
       return null;
     }
 
+    print("AAA firebase loading remote data");
     firebaseProvidedData = await FirebaseDatabase.instance.mapProvidedData(firebaseFields);
     if (!firebaseProvidedData.isAllRequiredFieldsExists()) {
       print("AAA some of the expected fields are empty");
