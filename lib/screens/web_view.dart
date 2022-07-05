@@ -56,6 +56,12 @@ class _WebViewPageState extends State<WebViewPage> {
                     print("AAA creation completed url is ${webViewUrl}");
                     _webController = con;
                   },
+                  onPageStarted: (x) {
+                      print("AAA on page loading started");
+                  },
+                  onPageFinished: (x) {
+                    print("AAA on page loading finished");
+                  },
                 ),
               ),
               Expanded(child:
