@@ -53,7 +53,7 @@ class _WebViewPageState extends State<WebViewPage> {
                   initialUrl: webViewUrl,
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (con) {
-                    print('AAA creation completed');
+                    print("AAA creation completed url is ${webViewUrl}");
                     _webController = con;
                   },
                 ),
