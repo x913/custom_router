@@ -56,11 +56,14 @@ class _WebViewPageState extends State<WebViewPage> {
                     print("AAA creation completed url is ${webViewUrl}");
                     _webController = con;
                   },
-                  onPageStarted: (x) {
-                      print("AAA on page loading started");
+                  onPageStarted: (String url) {
+                      print("AAA on page loading started $url");
                   },
-                  onPageFinished: (x) {
-                    print("AAA on page loading finished");
+                  onPageFinished: (String url) {
+                    print("AAA on page loading finished $url");
+                  },
+                  onProgress: (int progress) {
+                    print('AAA WebView is loading (progress : $progress%)');
                   },
                 ),
               ),

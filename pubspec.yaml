@@ -17,7 +17,7 @@ dependencies:
   appsflyer_sdk: ^6.5.2+2
   onesignal_flutter: ^3.0.0
   app_tracking_transparency: ^2.0.2+4
-  webview_flutter: ^2.1.2
+  webview_flutter: ^3.0.4
   firebase_core: 1.16.0
   firebase_database: 9.0.13
   firebase_core_platform_interface: 4.4.0
