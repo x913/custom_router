@@ -32,6 +32,9 @@ dependencies:
   uuid: ^3.0.6
   check_vpn_connection: ^0.0.2
 
+dependency_overrides:
+  firebase_core_platform_interface: 4.4.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
