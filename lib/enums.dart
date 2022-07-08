@@ -1,4 +1,12 @@
-enum Preference { initiated, webViewUrl, overrideUrl }
+enum Preference { 
+  initiated, 
+  webViewUrl, 
+  overrideUrl,
+  isFinalLinkCachingEnabled,
+  isOpenInBrowserEnabled,
+  isFinalLinkCachedAlready,
+}
+
 
 enum FirebaseField { url1, url2 }
 

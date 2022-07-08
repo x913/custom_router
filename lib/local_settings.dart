@@ -38,6 +38,31 @@ class LocalSettings {
     return _preferences!.getString(Preference.webViewUrl.asString()) ?? '';
   }
 
+  bool isFinalLinkCachingEnabled() {
+    return _preferences!.getBool(Preference.isFinalLinkCachingEnabled.asString()) ?? false;
+  }
+
+  bool isFinalLinkCachedAlready() {
+    return _preferences!.getBool(Preference.isFinalLinkCachedAlready.asString()) ?? false;
+  }
+
+
+  bool isOpenInBrowserEnabled() {
+    return _preferences!.getBool(Preference.isOpenInBrowserEnabled.asString()) ?? false;
+  }
+
+  void setFinalLinkCachingEnabled() {
+    _preferences!.setBool(Preference.isFinalLinkCachingEnabled.asString(), true);
+  }
+
+    void setFinalLinkCachedAlready() {
+    _preferences!.setBool(Preference.isFinalLinkCachedAlready.asString(), true);
+  }
+
+  void setOpenInBrowserEnabled() {
+    _preferences!.setBool(Preference.isOpenInBrowserEnabled.asString(), true);
+  }
+
   void setInitiated() {
     _preferences!.setBool(Preference.initiated.asString(), true);
   }

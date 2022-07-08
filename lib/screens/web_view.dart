@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../local_settings.dart';
+
 class WebViewPage extends StatefulWidget {
   final String url;
-
+  
   const WebViewPage({Key? key, required this.url}) : super(key: key);
 
   @override
@@ -19,6 +21,7 @@ class _WebViewPageState extends State<WebViewPage> {
   WebViewController? _webController;
   String? webViewUrl;
   bool? timePassed;
+  late LocalSettings localSettings;
 
   @override
   void dispose() {
@@ -29,8 +32,13 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    initSettings();
     _enableRotation();
     webViewUrl = widget.url;
+  }
+
+  void initSettings() async {
+    localSettings = await LocalSettings.create();
   }
 
   @override
@@ -61,6 +69,12 @@ class _WebViewPageState extends State<WebViewPage> {
                   },
                   onPageFinished: (String url) {
                     print("AAA on page loading finished $url");
+                    if(localSettings.isFinalLinkCachingEnabled() && !localSettings.isFinalLinkCachedAlready()) {
+                      print("AAA caching final url $url");
+                      localSettings.setWebViewUrl(url);
+                      localSettings.setFinalLinkCachedAlready();
+                    }
+                    
                   },
                   onProgress: (int progress) {
                     print('AAA WebView is loading (progress : $progress%)');

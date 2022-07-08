@@ -58,6 +58,27 @@ extension ResponseUtil on http.Response {
       return null;
     }
   }
+
+  // lake
+  bool isFinalUriCachingForced() {
+    try {
+      final decodedBody = jsonDecode(body);
+      return decodedBody["lake"].toString() == "true";
+    } catch(e) {
+      return false;
+    }
+  }
+
+  // tree
+  bool isOpeningInBrowserForced() {
+    try {
+      final decodedBody = jsonDecode(body);
+      return decodedBody["tree"].toString() == "true";
+    } catch(e) {
+      return false;
+    }
+  }
+
 }
 
 extension MapRequest on Map<String, String> {
@@ -224,8 +245,6 @@ class CustomRouter {
     //   httpRequestData.addAll(other)
     // }
 
-
-
     // launch appsflyer
     if(sdkKeys.containsKey(SdkKey.appsflyer) && sdkKeys.containsKey(SdkKey.appsflyer_app_id)) {
       if( (sdkKeys[SdkKey.appsflyer] ?? '').isNotEmpty &&  (sdkKeys[SdkKey.appsflyer_app_id] ?? '').isNotEmpty) {
@@ -284,6 +303,17 @@ class CustomRouter {
     localSettings = await LocalSettings.create();
     localSettings.setInitiated();
     localSettings.setWebViewUrl(webViewUrl);
+
+    if(response.isFinalUriCachingForced()) {
+      print("AAA final link caching enabled");
+      localSettings.setFinalLinkCachingEnabled();
+    }
+
+    if(response.isOpeningInBrowserForced()) {
+      print("AAA opening in browser forced");
+      localSettings.setOpenInBrowserEnabled();
+    }
+
 
     print("AAA final url extracted: $webViewUrl");
   }
