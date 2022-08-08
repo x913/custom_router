@@ -44,7 +44,7 @@ class _WebViewPageState extends State<WebViewPage> {
     localSettings = await LocalSettings.create();
     await FkUserAgent.init();
     try {
-      browserUserAgent = FkUserAgent.webViewUserAgent! + " Safari/604.1";
+      browserUserAgent = FkUserAgent.webViewUserAgent! + " Version/13.0.3 Safari/604.1";
       print("AAA useragent fetched success: $browserUserAgent");
     } on PlatformException {
       print("AAA useragent fetching error, set default");
