@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_user_agent/flutter_user_agent.dart';
+import 'package:fk_user_agent/fk_user_agent.dart';
 
 import '../local_settings.dart';
 
@@ -24,7 +24,7 @@ class _WebViewPageState extends State<WebViewPage> {
   bool? timePassed;
   late LocalSettings localSettings;
   
-  String browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
+  String browserUserAgent = "";
 
   @override
   void dispose() {
@@ -42,9 +42,13 @@ class _WebViewPageState extends State<WebViewPage> {
 
   void initSettings() async {
     localSettings = await LocalSettings.create();
-    browserUserAgent = await FlutterUserAgent.getPropertyAsync('userAgent');
-    print("AAA UserAgent is: $browserUserAgent");
-    await FlutterUserAgent.init();
+    try {
+      browserUserAgent = FkUserAgent.userAgent!;
+      print("AAA useragent fetched success: $platformVersion");
+    } on PlatformException {
+      print("AAA useragent fetching error, set default");
+      browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
+    }
   }
 
   @override
