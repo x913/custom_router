@@ -45,8 +45,18 @@ class _WebViewPageState extends State<WebViewPage> {
     await FkUserAgent.init();
     try {
       browserUserAgent = FkUserAgent.webViewUserAgent!;
+  
       int index = browserUserAgent.indexOf('Mobile');
-      browserUserAgent = browserUserAgent.substring(0, index + 1) + " Version/13.0.3 " + browserUserAgent.substring(index + 1) + "  Safari/604.1";
+      var version = "Version/13.0.3";
+      var safari = "Safari/604.1";
+  
+      if(index == -1) {
+	print("AAA no mobile string found");
+        browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";  
+      } else {
+        browserUserAgent = browserUserAgent.substring(0, index) + "$version " + browserUserAgent.substring(index) + " $safari";
+      }
+
       print("AAA useragent fetched success: $browserUserAgent");
     } on PlatformException {
       print("AAA useragent fetching error, set default");
