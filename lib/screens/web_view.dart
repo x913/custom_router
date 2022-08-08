@@ -35,7 +35,11 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-    initSettings();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    	initSettings();
+    }
+
     _enableRotation();
     webViewUrl = widget.url;
   }
