@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_user_agentx/flutter_user_agent.dart';
+import 'package:flutter_user_agent/flutter_user_agent.dart';
 
 import '../local_settings.dart';
 
