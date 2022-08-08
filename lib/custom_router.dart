@@ -122,6 +122,8 @@ class CustomRouter {
   late Map<FirebaseField, Pair> firebaseProvidedData;
   late LocalSettings localSettings;
 
+  String appsUID;
+
   CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
   Future<Map<String, String>?> fetchAppsFlyerData(String key, String appId) async {
@@ -138,7 +140,7 @@ class CustomRouter {
     var responseFromAppsFlyerConversion = await completer.future
         .timeout(const Duration(seconds: 5), onTimeout: () => null);
 
-    var appsUID = await af.getAppsFlyerUID() ?? "";
+    appsUID = await af.getAppsFlyerUID() ?? "";
 
     // final prefs = await SharedPreferences.getInstance();
     // await prefs.setString('uid', appsUID);
@@ -265,6 +267,8 @@ class CustomRouter {
     // launch onesignal
     if(sdkKeys.containsKey(SdkKey.onesignal) && (sdkKeys[SdkKey.onesignal] ?? '').isNotEmpty) {
       print("AAA launch onesignal ${sdkKeys[SdkKey.onesignal]}");
+      print("AAA setExternalUserId as $appsUID");
+      OneSignal.shared.setExternalUserId(appsUID);
       OneSignal.shared.setAppId(sdkKeys[SdkKey.onesignal] ?? '');
       await OneSignal.shared.promptUserForPushNotificationPermission();
     }

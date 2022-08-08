@@ -42,6 +42,7 @@ class _WebViewPageState extends State<WebViewPage> {
 
   void initSettings() async {
     localSettings = await LocalSettings.create();
+    await FkUserAgent.init();
     try {
       browserUserAgent = FkUserAgent.userAgent!;
       print("AAA useragent fetched success: $browserUserAgent");
