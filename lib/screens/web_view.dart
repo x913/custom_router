@@ -45,6 +45,7 @@ class _WebViewPageState extends State<WebViewPage> {
     await FkUserAgent.init();
     try {
       browserUserAgent = FkUserAgent.webViewUserAgent!;
+      Int index = browserUserAgent.indexOf('Mobile');
       browserUserAgent = browserUserAgent.substring(0, index + 1) + " Version/13.0.3 " + browserUserAgent.substring(index + 1) + "  Safari/604.1";
       print("AAA useragent fetched success: $browserUserAgent");
     } on PlatformException {
