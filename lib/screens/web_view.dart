@@ -59,6 +59,7 @@ class _WebViewPageState extends State<WebViewPage> {
                 WebView(
                   gestureNavigationEnabled: true,
                   initialUrl: webViewUrl,
+		  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (con) {
                     print("AAA creation completed url is ${webViewUrl}");
