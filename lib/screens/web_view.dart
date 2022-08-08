@@ -68,6 +68,9 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    print("AAA build webview $browserUserAgent");
+
     return WillPopScope(
       onWillPop: () async {
         if ((await _webController?.canGoBack()) ?? false) {
@@ -84,7 +87,8 @@ class _WebViewPageState extends State<WebViewPage> {
                 WebView(
                   gestureNavigationEnabled: true,
                   initialUrl: webViewUrl,
-		  userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		  //userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		  userAgent: browserUserAgent,
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (con) {
                     print("AAA creation completed url is ${webViewUrl}");
