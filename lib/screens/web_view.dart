@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_user_agentx/flutter_user_agent.dart';
 
 import '../local_settings.dart';
 
@@ -22,6 +23,8 @@ class _WebViewPageState extends State<WebViewPage> {
   String? webViewUrl;
   bool? timePassed;
   late LocalSettings localSettings;
+  
+  String browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
 
   @override
   void dispose() {
@@ -39,6 +42,9 @@ class _WebViewPageState extends State<WebViewPage> {
 
   void initSettings() async {
     localSettings = await LocalSettings.create();
+    browserUserAgent = await FlutterUserAgent.getPropertyAsync('userAgent');
+    print("AAA UserAgent is: $browserUserAgent");
+    await FlutterUserAgent.init();
   }
 
   @override
@@ -59,7 +65,7 @@ class _WebViewPageState extends State<WebViewPage> {
                 WebView(
                   gestureNavigationEnabled: true,
                   initialUrl: webViewUrl,
-		  userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+		  userAgent: browserUserAgent,
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (con) {
                     print("AAA creation completed url is ${webViewUrl}");
