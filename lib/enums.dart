@@ -42,4 +42,10 @@ enum CollectableFields {
   vpn,                // +
   af_ad_id,           // +
   uuid,               // +
+
+  af_adset_id,
+  atributionId,
+  adId, 
+  adgroupId
+
 }

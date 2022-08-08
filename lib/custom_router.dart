@@ -307,14 +307,16 @@ class CustomRouter {
     if(response.isFinalUriCachingForced()) {
       print("AAA final link caching enabled");
       localSettings.setFinalLinkCachingEnabled();
+    } else {
+      print("AAA final link caching not enabled");
     }
 
     if(response.isOpeningInBrowserForced()) {
       print("AAA opening in browser forced");
       localSettings.setOpenInBrowserEnabled();
+    } else {
+      print("AAA opening in browser not forced");
     }
-
-
     print("AAA final url extracted: $webViewUrl");
   }
 
