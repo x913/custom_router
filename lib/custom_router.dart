@@ -122,7 +122,7 @@ class CustomRouter {
   late Map<FirebaseField, Pair> firebaseProvidedData;
   late LocalSettings localSettings;
 
-  String appsUID;
+  String appsUID = "";
 
   CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
