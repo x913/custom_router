@@ -38,7 +38,7 @@ class _WebViewPageState extends State<WebViewPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
     	initSettings();
-    }
+    });
 
     _enableRotation();
     webViewUrl = widget.url;
