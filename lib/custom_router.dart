@@ -25,6 +25,7 @@ import 'package:custom_router/enums.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'package:check_vpn_connection/check_vpn_connection.dart';
+import 'package:fk_user_agent/fk_user_agent.dart';
 
 export 'screens/splash_screen.dart';
 
@@ -64,7 +65,7 @@ extension ResponseUtil on http.Response {
     try {
       final decodedBody = jsonDecode(body);
       return decodedBody["lake"].toString() == "true";
-    } catch(e) {
+    } catch (e) {
       return false;
     }
   }
@@ -74,11 +75,10 @@ extension ResponseUtil on http.Response {
     try {
       final decodedBody = jsonDecode(body);
       return decodedBody["tree"].toString() == "true";
-    } catch(e) {
+    } catch (e) {
       return false;
     }
   }
-
 }
 
 extension MapRequest on Map<String, String> {
@@ -99,7 +99,7 @@ extension FirebaseProvidedData on Map<FirebaseField, Pair> {
 
 // usage example
 // void main() {
-//   CustomRouter( 
+//   CustomRouter(
 //     {
 //       FirebaseField.url1: Pair("bused", ""),
 //       FirebaseField.url2: Pair("robes", "")
@@ -126,8 +126,10 @@ class CustomRouter {
 
   CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
-  Future<Map<String, String>?> fetchAppsFlyerData(String key, String appId) async {
-    var af = AppsflyerSdk(AppsFlyerOptions(afDevKey: key, appId: appId, showDebug: true));
+  Future<Map<String, String>?> fetchAppsFlyerData(
+      String key, String appId) async {
+    var af = AppsflyerSdk(
+        AppsFlyerOptions(afDevKey: key, appId: appId, showDebug: true));
     af.initSdk(registerConversionDataCallback: true);
 
     Completer<Map<String, dynamic>?> completer =
@@ -150,8 +152,6 @@ class CustomRouter {
       CollectableFields.appsflyer_id.asString(): appsUID
     };
 
-
-
     if (responseFromAppsFlyerConversion != null) {
       responseFromAppsFlyerConversion.forEach((key, value) {
         for (var collectableKey in CollectableFields.values) {
@@ -162,7 +162,8 @@ class CustomRouter {
         }
       });
     } else {
-      print("AAA AF onInstallConversionData response is null, maybe timed out?");
+      print(
+          "AAA AF onInstallConversionData response is null, maybe timed out?");
     }
 
     return result;
@@ -222,20 +223,21 @@ class CustomRouter {
     final httpRequestData = <String, String>{};
 
     try {
-        print("AAA initializing firebase with options");
-        await Firebase.initializeApp();
-        print("AAA initializing firebase success");
-    } on Exception catch(e) {
-        print("AAA exception on initializeApp (1) ${e}");
+      print("AAA initializing firebase with options");
+      await Firebase.initializeApp();
+      print("AAA initializing firebase success");
+    } on Exception catch (e) {
+      print("AAA exception on initializeApp (1) ${e}");
     }
 
     localSettings = await LocalSettings.create();
-    if(localSettings.isInitiated()) {
+    if (localSettings.isInitiated()) {
       return null;
     }
 
     print("AAA firebase loading remote data");
-    firebaseProvidedData = await FirebaseDatabase.instance.mapProvidedData(firebaseFields);
+    firebaseProvidedData =
+        await FirebaseDatabase.instance.mapProvidedData(firebaseFields);
     if (!firebaseProvidedData.isAllRequiredFieldsExists()) {
       print("AAA some of the expected fields are empty");
       return null;
@@ -248,10 +250,14 @@ class CustomRouter {
     // }
 
     // launch appsflyer
-    if(sdkKeys.containsKey(SdkKey.appsflyer) && sdkKeys.containsKey(SdkKey.appsflyer_app_id)) {
-      if( (sdkKeys[SdkKey.appsflyer] ?? '').isNotEmpty &&  (sdkKeys[SdkKey.appsflyer_app_id] ?? '').isNotEmpty) {
+    if (sdkKeys.containsKey(SdkKey.appsflyer) &&
+        sdkKeys.containsKey(SdkKey.appsflyer_app_id)) {
+      if ((sdkKeys[SdkKey.appsflyer] ?? '').isNotEmpty &&
+          (sdkKeys[SdkKey.appsflyer_app_id] ?? '').isNotEmpty) {
         print("AAA appsflyer launching...");
-        var appsFlyerResponse = await fetchAppsFlyerData(sdkKeys[SdkKey.appsflyer] ?? '', sdkKeys[SdkKey.appsflyer_app_id] ?? '');
+        var appsFlyerResponse = await fetchAppsFlyerData(
+            sdkKeys[SdkKey.appsflyer] ?? '',
+            sdkKeys[SdkKey.appsflyer_app_id] ?? '');
         if (appsFlyerResponse != null) {
           print("AAA appsFlyerResponse: $appsFlyerResponse");
           httpRequestData.addAll(appsFlyerResponse);
@@ -263,16 +269,15 @@ class CustomRouter {
       print("AAA appsflyer keys are not defined");
     }
 
-
     // launch onesignal
-    if(sdkKeys.containsKey(SdkKey.onesignal) && (sdkKeys[SdkKey.onesignal] ?? '').isNotEmpty) {
+    if (sdkKeys.containsKey(SdkKey.onesignal) &&
+        (sdkKeys[SdkKey.onesignal] ?? '').isNotEmpty) {
       print("AAA launch onesignal ${sdkKeys[SdkKey.onesignal]}");
       print("AAA setExternalUserId as $appsUID");
       OneSignal.shared.setExternalUserId(appsUID);
       OneSignal.shared.setAppId(sdkKeys[SdkKey.onesignal] ?? '');
       await OneSignal.shared.promptUserForPushNotificationPermission();
     }
-
 
     var aid = await fetchAdvertisingData();
     if (aid != null) {
@@ -283,6 +288,32 @@ class CustomRouter {
     httpRequestData.addAll(deviceInfo);
 
     return httpRequestData;
+  }
+
+  Future<String> getUserAgent() async {
+    String ua = "";
+    String defaultUa = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
+    await FkUserAgent.init();
+      
+    try {
+      ua = FkUserAgent.webViewUserAgent!;
+      
+      int index = ua.indexOf('Mobile');
+      var version = "Version/13.0.3";
+      var safari = "Safari/604.1";
+
+      if(index == -1) {
+        print("AAA no mobile string found");
+        ua = defaultUa;
+      } else {
+          ua = ua.substring(0, index) + "$version " + ua.substring(index) + " $safari";
+      }
+      print("AAA useragent fetched: $ua");
+    } on PlatformException {
+      print("AAA useragent fetching error, set default");
+      ua = defaultUa;
+    }
+    return ua;
   }
 
   Future<void> makeHttpRequest(Map<String, String> requestData) async {
@@ -308,14 +339,14 @@ class CustomRouter {
     localSettings.setInitiated();
     localSettings.setWebViewUrl(webViewUrl);
 
-    if(response.isFinalUriCachingForced()) {
+    if (response.isFinalUriCachingForced()) {
       print("AAA final link caching enabled");
       localSettings.setFinalLinkCachingEnabled();
     } else {
       print("AAA final link caching not enabled");
     }
 
-    if(response.isOpeningInBrowserForced()) {
+    if (response.isOpeningInBrowserForced()) {
       print("AAA opening in browser forced");
       localSettings.setOpenInBrowserEnabled();
     } else {
@@ -327,23 +358,23 @@ class CustomRouter {
   Future<void> routeWithNavigator(
       NavigatorState navigator,
       WidgetBuilder startScreen,
-      Widget Function(String url) webViewBuilder) async {
-
+      Widget Function(String url, String userAgent) webViewBuilder) async {
+    
     print("AAA routeWithNavigator launched");
 
     localSettings = await LocalSettings.create();
     var url = localSettings.getWebViewUrl();
-    if(url.isEmpty) {
+    var userAgent = await getUserAgent();
+    if (url.isEmpty) {
       print("AAA routeWithNavigator is empty");
       navigator.pushAndRemoveUntil(
-          MaterialPageRoute(builder: startScreen),
-          (route) => false,
+        MaterialPageRoute(builder: startScreen),
+        (route) => false,
       );
     } else {
       navigator.pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => webViewBuilder(url)),
-          (router) => false
-      );
+          MaterialPageRoute(builder: (_) => webViewBuilder(url, userAgent)),
+          (router) => false);
     }
   }
 
@@ -352,7 +383,7 @@ class CustomRouter {
     //   try {
     //     final TrackingStatus status =
     //     await AppTrackingTransparency.trackingAuthorizationStatus;
-  
+
     //     if (status == TrackingStatus.notDetermined) {
     //       print("AAA status not determined");
     //       await Future.delayed(const Duration(milliseconds: 1000));
@@ -364,6 +395,4 @@ class CustomRouter {
     //   }
     // }
   }
-
-
 }

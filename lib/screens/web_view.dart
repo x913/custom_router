@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:fk_user_agent/fk_user_agent.dart';
 
 import '../local_settings.dart';
 
 class WebViewPage extends StatefulWidget {
   final String url;
+  final String userAgent;
   
-  const WebViewPage({Key? key, required this.url}) : super(key: key);
+  const WebViewPage({Key? key, required this.url, required this.userAgent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,6 +21,7 @@ class WebViewPage extends StatefulWidget {
 class _WebViewPageState extends State<WebViewPage> {
   WebViewController? _webController;
   String? webViewUrl;
+  String? ua;
   bool? timePassed;
   late LocalSettings localSettings;
   
@@ -35,45 +36,20 @@ class _WebViewPageState extends State<WebViewPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    	initSettings();
-    });
-
+    initSettings();
     _enableRotation();
     webViewUrl = widget.url;
+    ua = widget.userAgent;
   }
 
-  void initSettings() async {
+  Future<void> initSettings() async {
     localSettings = await LocalSettings.create();
-    await FkUserAgent.init();
-    try {
-      browserUserAgent = FkUserAgent.webViewUserAgent!;
-  
-      int index = browserUserAgent.indexOf('Mobile');
-      var version = "Version/13.0.3";
-      var safari = "Safari/604.1";
-  
-      if(index == -1) {
-	print("AAA no mobile string found");
-        // browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";  
-	browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
-      			 // Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E217 Safari/604.1
-      } else {
-        browserUserAgent = browserUserAgent.substring(0, index) + "$version " + browserUserAgent.substring(index) + " $safari";
-      }
-
-      print("AAA useragent fetched success: $browserUserAgent");
-    } on PlatformException {
-      print("AAA useragent fetching error, set default");
-      browserUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
-    }
   }
 
   @override
   Widget build(BuildContext context) {
 
-    print("AAA build webview $browserUserAgent");
+    print("AAA build webview $ua");
 
     return WillPopScope(
       onWillPop: () async {
@@ -91,8 +67,8 @@ class _WebViewPageState extends State<WebViewPage> {
                 WebView(
                   gestureNavigationEnabled: true,
                   initialUrl: webViewUrl,
-		  //userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
-		  userAgent: browserUserAgent,
+		              //userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+		              userAgent: ua,
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (con) {
                     print("AAA creation completed url is ${webViewUrl}");
