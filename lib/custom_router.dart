@@ -292,21 +292,53 @@ class CustomRouter {
 
   Future<String> getUserAgent() async {
     String ua = "";
-    String defaultUa = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
+    String defaultUa =
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
     await FkUserAgent.init();
-      
+
     try {
       ua = FkUserAgent.webViewUserAgent!;
-      
+
+      // test
+
+      var isEmulator = FkUserAgent.getProperty("isEmulator");
+      var systemName = FkUserAgent.getProperty("systemName");
+      var systemVersion = FkUserAgent.getProperty("systemVersion");
+      var applicationName = FkUserAgent.getProperty("applicationName");
+      var applicationVersion = FkUserAgent.getProperty("applicationVersion");
+      var buildNumber = FkUserAgent.getProperty("buildNumber");
+      var darwinVersion = FkUserAgent.getProperty("darwinVersion");
+      var cfnetworkVersion = FkUserAgent.getProperty("cfnetworkVersion");
+      var deviceName = FkUserAgent.getProperty("deviceName");
+      var packageUserAgent = FkUserAgent.getProperty("packageUserAgent");
+      var userAgent = FkUserAgent.getProperty("userAgent");
+      var webViewUserAgent = FkUserAgent.getProperty("webViewUserAgent");
+
+      print("AAA isEmulator $isEmulator");
+      print("AAA systemName $systemName");
+      print("AAA systemVersion $systemVersion");
+      print("AAA applicationName $applicationName");
+      print("AAA buildNumber $buildNumber");
+      print("AAA darwinVersion $darwinVersion");
+      print("AAA cfnetworkVersion $cfnetworkVersion");
+      print("AAA deviceName $deviceName");
+      print("AAA packageUserAgent $packageUserAgent");
+      print("AAA userAgent $userAgent");
+      print("AAA webViewUserAgent $webViewUserAgent");
+
+
       int index = ua.indexOf('Mobile');
       var version = "Version/13.0.3";
       var safari = "Safari/604.1";
 
-      if(index == -1) {
+      if (index == -1) {
         print("AAA no mobile string found");
         ua = defaultUa;
       } else {
-          ua = ua.substring(0, index) + "$version " + ua.substring(index) + " $safari";
+        ua = ua.substring(0, index) +
+            "$version " +
+            ua.substring(index) +
+            " $safari";
       }
       print("AAA useragent fetched: $ua");
     } on PlatformException {
@@ -359,7 +391,6 @@ class CustomRouter {
       NavigatorState navigator,
       WidgetBuilder startScreen,
       Widget Function(String url, String userAgent) webViewBuilder) async {
-    
     print("AAA routeWithNavigator launched");
 
     localSettings = await LocalSettings.create();

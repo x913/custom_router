@@ -20,12 +20,14 @@ class WebViewPage extends StatefulWidget {
 
 class _WebViewPageState extends State<WebViewPage> {
   WebViewController? _webController;
-  String? webViewUrl;
-  String? ua;
-  bool? timePassed;
-  late LocalSettings localSettings;
   
-  String browserUserAgent = "";
+  String? webViewUrl;
+  
+  String? ua;
+
+  bool? timePassed;
+  
+  late LocalSettings localSettings;
 
   @override
   void dispose() {
