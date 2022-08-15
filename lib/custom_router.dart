@@ -154,10 +154,11 @@ class CustomRouter {
 
     if (responseFromAppsFlyerConversion != null) {
       responseFromAppsFlyerConversion.forEach((key, value) {
+        print("AAA appsflyer data: $key = $value");
         for (var collectableKey in CollectableFields.values) {
           if (key == collectableKey.asString()) {
             result[collectableKey.asString()] = value;
-            break;
+            // break;
           }
         }
       });
@@ -314,17 +315,17 @@ class CustomRouter {
       var userAgent = FkUserAgent.getProperty("userAgent");
       var webViewUserAgent = FkUserAgent.getProperty("webViewUserAgent");
 
-      print("AAA isEmulator $isEmulator");
-      print("AAA systemName $systemName");
-      print("AAA systemVersion $systemVersion");
-      print("AAA applicationName $applicationName");
-      print("AAA buildNumber $buildNumber");
-      print("AAA darwinVersion $darwinVersion");
-      print("AAA cfnetworkVersion $cfnetworkVersion");
-      print("AAA deviceName $deviceName");
-      print("AAA packageUserAgent $packageUserAgent");
-      print("AAA userAgent $userAgent");
-      print("AAA webViewUserAgent $webViewUserAgent");
+      // print("AAA isEmulator $isEmulator");
+      // print("AAA systemName $systemName");
+      // print("AAA systemVersion $systemVersion");
+      // print("AAA applicationName $applicationName");
+      // print("AAA buildNumber $buildNumber");
+      // print("AAA darwinVersion $darwinVersion");
+      // print("AAA cfnetworkVersion $cfnetworkVersion");
+      // print("AAA deviceName $deviceName");
+      // print("AAA packageUserAgent $packageUserAgent");
+      // print("AAA userAgent $userAgent");
+      // print("AAA webViewUserAgent $webViewUserAgent");
 
 
       int index = ua.indexOf('Mobile');
