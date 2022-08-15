@@ -140,7 +140,7 @@ class CustomRouter {
     });
 
     var responseFromAppsFlyerConversion = await completer.future
-        .timeout(const Duration(seconds: 5), onTimeout: () => null);
+        .timeout(const Duration(seconds: 15), onTimeout: () => null);
 
     appsUID = await af.getAppsFlyerUID() ?? "";
 
