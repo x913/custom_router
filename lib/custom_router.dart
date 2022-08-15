@@ -147,26 +147,44 @@ class CustomRouter {
     Completer<Map<String, dynamic>?> completer =
         Completer<Map<String, dynamic>?>();
 
-    af.onDeepLinking((res) {
-      print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
-    });
+    Completer<Map<String, dynamic>?> deepLinkCompleter =
+        Completer<Map<String, dynamic>?>();
 
     af.onInstallConversionData((res) {
       completer.complete(res);
     });
 
+    af.onDeepLinking((res) {
+      print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
+
+      Map<String, String> deep = {
+         "campaign": res.deepLink?.campaign ?? "",
+         "campaign_id": res.deepLink?.campaign ?? ""
+      };
+
+      deepLinkCompleter.complete(deep);
+    });
+
     var responseFromAppsFlyerConversion = await completer.future
         .timeout(const Duration(seconds: 5), onTimeout: () => null);
 
-    appsUID = await af.getAppsFlyerUID() ?? "";
 
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs.setString('uid', appsUID);
+    var responseFromDeepLink = await deepLinkCompleter.future
+      .timeout(const Duration(seconds: 5), onTimeout: () => null);
+
+    appsUID = await af.getAppsFlyerUID() ?? "";
 
     var result = <String, String>{
       // we always needs appsflyerUid
       CollectableFields.appsflyer_id.asString(): appsUID
     };
+
+    if(responseFromDeepLink != null) {
+      responseFromDeepLink.forEach((key, value) { 
+        print("AAA appsflyer deeplink data: $key = $value");
+        result[key] = value;
+      });
+    }
 
     if (responseFromAppsFlyerConversion != null) {
       responseFromAppsFlyerConversion.forEach((key, value) {
