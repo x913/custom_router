@@ -184,6 +184,8 @@ class CustomRouter {
         print("AAA appsflyer deeplink data: $key = $value");
         result[key] = value;
       });
+    } else {
+       print("AAA AF responseFromDeepLink response is null, maybe timed out?");
     }
 
     if (responseFromAppsFlyerConversion != null) {
