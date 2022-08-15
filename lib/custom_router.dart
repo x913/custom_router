@@ -158,7 +158,7 @@ class CustomRouter {
         for (var collectableKey in CollectableFields.values) {
           if (key == collectableKey.asString()) {
             result[collectableKey.asString()] = value;
-            break;
+            // break;
           }
         }
       });
@@ -411,20 +411,20 @@ class CustomRouter {
   }
 
   Future<void> initializeTransparancyFramework() async {
-    if(Platform.isIOS) {
-      try {
-        final TrackingStatus status =
-        await AppTrackingTransparency.trackingAuthorizationStatus;
+    // if(Platform.isIOS) {
+    //   try {
+    //     final TrackingStatus status =
+    //     await AppTrackingTransparency.trackingAuthorizationStatus;
 
-        if (status == TrackingStatus.notDetermined) {
-          print("AAA status not determined");
-          await Future.delayed(const Duration(milliseconds: 1000));
-          final TrackingStatus status =
-          await AppTrackingTransparency.requestTrackingAuthorization();
-        }
-      } on PlatformException {
-        print("AAA platform exception thrown");
-      }
-    }
+    //     if (status == TrackingStatus.notDetermined) {
+    //       print("AAA status not determined");
+    //       await Future.delayed(const Duration(milliseconds: 1000));
+    //       final TrackingStatus status =
+    //       await AppTrackingTransparency.requestTrackingAuthorization();
+    //     }
+    //   } on PlatformException {
+    //     print("AAA platform exception thrown");
+    //   }
+    // }
   }
 }
