@@ -132,7 +132,7 @@ class CustomRouter {
         AppsFlyerOptions(afDevKey: key, 
         appId: appId, 
         showDebug: true, 
-        timeToWaitForATTUserAuthorization: 50,
+        timeToWaitForATTUserAuthorization: 10,
         disableAdvertisingIdentifier: false,
         disableCollectASA: false));
 
@@ -146,6 +146,10 @@ class CustomRouter {
 
     Completer<Map<String, dynamic>?> completer =
         Completer<Map<String, dynamic>?>();
+
+    af.onDeepLinking((res) {
+      print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
+    });
 
     af.onInstallConversionData((res) {
       completer.complete(res);
