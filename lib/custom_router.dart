@@ -138,6 +138,12 @@ class CustomRouter {
 
     af.initSdk(registerConversionDataCallback: true);
 
+    print("AAA requesting initializeTransparancyFramework");
+
+    await initializeTransparancyFramework();
+
+    print("AAA requesting initializeTransparancyFramework completed");
+
     Completer<Map<String, dynamic>?> completer =
         Completer<Map<String, dynamic>?>();
 
