@@ -129,7 +129,13 @@ class CustomRouter {
   Future<Map<String, String>?> fetchAppsFlyerData(
       String key, String appId) async {
     var af = AppsflyerSdk(
-        AppsFlyerOptions(afDevKey: key, appId: appId, showDebug: true));
+        AppsFlyerOptions(afDevKey: key, 
+        appId: appId, 
+        showDebug: true, 
+        timeToWaitForATTUserAuthorization: 50,
+        disableAdvertisingIdentifier: false,
+        disableCollectASA: false));
+
     af.initSdk(registerConversionDataCallback: true);
 
     Completer<Map<String, dynamic>?> completer =
@@ -140,7 +146,7 @@ class CustomRouter {
     });
 
     var responseFromAppsFlyerConversion = await completer.future
-        .timeout(const Duration(seconds: 15), onTimeout: () => null);
+        .timeout(const Duration(seconds: 60), onTimeout: () => null);
 
     appsUID = await af.getAppsFlyerUID() ?? "";
 
