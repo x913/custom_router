@@ -158,7 +158,7 @@ class CustomRouter {
         for (var collectableKey in CollectableFields.values) {
           if (key == collectableKey.asString()) {
             result[collectableKey.asString()] = value;
-            // break;
+            break;
           }
         }
       });
