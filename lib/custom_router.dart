@@ -140,7 +140,7 @@ class CustomRouter {
         // disableCollectASA: true
         ));
 
-    af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
+    await af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
 
     var result = <String, String>{
       CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
