@@ -152,26 +152,32 @@ class CustomRouter {
         // disableCollectASA: true
         ));
 
+    var isConversionHandled = false;
+
     // Map<String, dynamic> 
     af.onInstallConversionData((res) {
-      print("AAA onInstallConversionData called $res, data: ${res["payload"]}");
-
-      var data = res?['payload'];
-      print("AAA enumerating conversion data");
-      data.forEach((key, value) {
-        if(value == null) {
-          print("AAA enum searching cancelled for $key, value is null");
-        } else {
-          print("AAA enum searching for $key in collectable fields with value of ${value.toString()}");
-          for (var collectableKey in CollectableFields.values) {
-            if (key.toString() == collectableKey.asString() && value.toString().isNotEmpty) {
-              result[collectableKey.asString()] = value;
-              break;
+      if(isConversionHandled) {
+        print("AAA onInstallConversionData already handled");
+        isConversionHandled = true;
+      } else {
+        print("AAA onInstallConversionData called $res, data: ${res["payload"]}");
+          var data = res?['payload'];
+          print("AAA enumerating conversion data");
+          data.forEach((key, value) {
+            if(value == null) {
+              print("AAA enum searching cancelled for $key, value is null");
+            } else {
+              print("AAA enum searching for $key in collectable fields with value of ${value.toString()}");
+              for (var collectableKey in CollectableFields.values) {
+                if (key.toString() == collectableKey.asString() && value.toString().isNotEmpty) {
+                  result[collectableKey.asString()] = value;
+                  break;
+                }
+              }
             }
-          }
-        }
-      });
-      print("AAA enumerating completed: $result");
+          });
+          print("AAA enumerating completed: $result");
+      }
     });
 
     af.onDeepLinking((res) {
@@ -218,8 +224,8 @@ class CustomRouter {
     // var conversionData = await onConversionDataCompleter.future
     //     .timeout(duration, onTimeout: () => null);
 
-    await Future.delayed(const Duration(seconds: 10), () {
-      print("AAA waiting timeout?");  
+    await Future.delayed(const Duration(seconds: 5), () {
+      print("AAA waiting...");  
     });
 
     print("AAA waiting for onConversionDataCompleter completed with $result");
