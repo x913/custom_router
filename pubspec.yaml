@@ -14,7 +14,8 @@ dependencies:
   #flutter_facebook_sdk:
   #  path: flutter_facebook_sdk
   # flutter_facebook_sdk: ^1.0.0  
-  appsflyer_sdk: ^6.5.2+2
+  # appsflyer_sdk: ^6.5.2+2
+  appsflyer_sdk: 6.8.0
   onesignal_flutter: ^3.0.0
   app_tracking_transparency: ^2.0.2+4
   webview_flutter: ^3.0.4
