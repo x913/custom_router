@@ -135,11 +135,12 @@ class CustomRouter {
         afDevKey: key,
         appId: appId,
         showDebug: true,
-        timeToWaitForATTUserAuthorization: 10,
-        disableAdvertisingIdentifier: true,
-        disableCollectASA: true));
+        // timeToWaitForATTUserAuthorization: 10,
+        // disableAdvertisingIdentifier: true,
+        // disableCollectASA: true
+        ));
 
-    af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true);
+    af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
 
     var result = <String, String>{
       CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
@@ -171,7 +172,7 @@ class CustomRouter {
     if(conversionData != null) {
       print("AAA appsflyer conversionData: $conversionData");
     } else {
-      print("AAA AF responseFromDeepLink response is null, maybe timed out?");
+      print("AAA appsflyer conversionData is null, maybe timed out?");
     }
 
     return result;
