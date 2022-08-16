@@ -126,28 +126,38 @@ class CustomRouter {
 
   CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
+//**
+// start
+//
+// */
+
   Future<Map<String, String>?> fetchAppsFlyerData(
       String key, String appId) async {
   
     var duration = const Duration(seconds: 15);
 
+
+    Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
+
+    var result = <String, String> {
+
+    };
+
     var af = AppsflyerSdk(AppsFlyerOptions(
         afDevKey: key,
         appId: appId,
         showDebug: true,
-        // timeToWaitForATTUserAuthorization: 10,
+        timeToWaitForATTUserAuthorization: 10,
         // disableAdvertisingIdentifier: true,
         // disableCollectASA: true
         ));
 
-    await af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
-
-    var result = <String, String>{
-      CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
-    };
-
-
-    Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
+    af.onDeepLinking((res) {
+      print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
+      result["campaign"] = res.deepLink?.campaign ?? "";
+      result["campaign_id"] = res.deepLink?.campaign ?? "";
+      result["deeplink"] = res.deepLink?.deepLinkValue ?? "";
+    });
 
     af.onInstallConversionData((Map<String, dynamic> res) {
       print("AAA onInstallConversionData called $res");
@@ -159,15 +169,14 @@ class CustomRouter {
       onConversionDataCompleter.complete(res);
     });
 
-    af.onDeepLinking((res) {
-      print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
-      result["campaign"] = res.deepLink?.campaign ?? "";
-      result["campaign_id"] = res.deepLink?.campaign ?? "";
-      result["deeplink"] = res.deepLink?.deepLinkValue ?? "";
-    });
+    var status = await af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
+
+    print("AAA sdk was init $status");
+
+    result[CollectableFields.appsflyer_id.asString()] =  await af.getAppsFlyerUID() ?? "";    
 
     var conversionData = await onConversionDataCompleter.future
-        .timeout(const Duration(seconds: 30), onTimeout: () => null);
+        .timeout(duration, onTimeout: () => null);
   
     if(conversionData != null) {
       print("AAA appsflyer conversionData: $conversionData");
