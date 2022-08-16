@@ -124,6 +124,8 @@ class CustomRouter {
 
   String appsUID = "";
 
+  var isConversionHandled = false;
+
   CustomRouter(this.firebaseFields, this.responseField, this.sdkKeys);
 
 //**
@@ -152,8 +154,7 @@ class CustomRouter {
         // disableCollectASA: true
         ));
 
-    var isConversionHandled = false;
-
+   
     // Map<String, dynamic> 
     af.onInstallConversionData((res) {
       if(isConversionHandled) {
