@@ -2,6 +2,7 @@ library custom_router;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:advertising_id/advertising_id.dart';
@@ -135,49 +136,48 @@ class CustomRouter {
 
   Future<Map<String, String>?> fetchAppsFlyerData(
       String key, String appId) async {
-  
     var duration = const Duration(seconds: 30);
 
+    Completer<void> onConversionDataCompleter = Completer<void>();
 
-    Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
-
-    var result = <String, String> {
-
-    };
+    var result = <String, String>{};
 
     var af = AppsflyerSdk(AppsFlyerOptions(
-        afDevKey: key,
-        appId: appId,
-        showDebug: true,
-        timeToWaitForATTUserAuthorization: 10,
-        // disableAdvertisingIdentifier: true,
-        // disableCollectASA: true
-        ));
+      afDevKey: key,
+      appId: appId,
+      showDebug: true,
+      timeToWaitForATTUserAuthorization: 10,
+      // disableAdvertisingIdentifier: true,
+      // disableCollectASA: true
+    ));
 
-   
-    // Map<String, dynamic> 
+    // Map<String, dynamic>
     af.onInstallConversionData((res) {
-      if(isConversionHandled) {
+      if (isConversionHandled) {
         print("AAA onInstallConversionData already handled");
       } else {
-        isConversionHandled = true;
-        print("AAA onInstallConversionData called $res, data: ${res["payload"]}");
-          var data = res?['payload'];
-          print("AAA enumerating conversion data");
-          data.forEach((key, value) {
-            if(value == null) {
-              print("AAA enum searching cancelled for $key, value is null");
-            } else {
-              print("AAA enum searching for $key in collectable fields with value of ${value.toString()}");
-              for (var collectableKey in CollectableFields.values) {
-                if (key.toString() == collectableKey.asString() && value.toString().isNotEmpty) {
-                  result[collectableKey.asString()] = value;
-                  break;
-                }
+        print(
+            "AAA onInstallConversionData called $res, data: ${res["payload"]}");
+        var data = res?['payload'];
+        print("AAA enumerating conversion data");
+        data.forEach((key, value) {
+          if (value == null) {
+            print("AAA enum searching cancelled for $key, value is null");
+          } else {
+            print(
+                "AAA enum searching for $key in collectable fields with value of ${value.toString()}");
+            for (var collectableKey in CollectableFields.values) {
+              if (key.toString() == collectableKey.asString() &&
+                  value.toString().isNotEmpty) {
+                result[collectableKey.asString()] = value;
+                break;
               }
             }
-          });
-          print("AAA enumerating completed: $result");
+          }
+        });
+        print("AAA enumerating completed: $result");
+        isConversionHandled = true;
+        onConversionDataCompleter.complete();
       }
     });
 
@@ -188,18 +188,17 @@ class CustomRouter {
       var deepLinkValue = res.deepLink?.deepLinkValue ?? "";
       var campaignId = res.deepLink?.campaignId ?? "";
 
-      if(campaign.isNotEmpty) {
+      if (campaign.isNotEmpty) {
         result["campaign"] = campaign;
       }
 
-      if(deepLinkValue.isNotEmpty) {
+      if (deepLinkValue.isNotEmpty) {
         result["deepLinkValue"] = deepLinkValue;
       }
 
-      if(campaignId.isNotEmpty) {
+      if (campaignId.isNotEmpty) {
         result["campaignId"] = campaignId;
       }
- 
     });
 
     af.onAppOpenAttribution((res) {
@@ -207,27 +206,28 @@ class CustomRouter {
     });
 
     var status = await af.initSdk(
-      registerConversionDataCallback: true, 
-      registerOnDeepLinkingCallback: true, 
-      registerOnAppOpenAttributionCallback: true
-    );
+        registerConversionDataCallback: true,
+        registerOnDeepLinkingCallback: true,
+        registerOnAppOpenAttributionCallback: true);
 
     af.enableFacebookDeferredApplinks(true);
 
     print("AAA sdk was init $status");
 
     // appsUID needed for onesignal
-    appsUID = await af.getAppsFlyerUID() ?? "";  
+    appsUID = await af.getAppsFlyerUID() ?? "";
     result[CollectableFields.appsflyer_id.asString()] = appsUID;
 
     print("AAA waiting for onConversionDataCompleter...");
 
+    await onConversionDataCompleter.future.timeout(duration, onTimeout: () => print("onConversionDataCompleter timeout"));
+
     // var conversionData = await onConversionDataCompleter.future
     //     .timeout(duration, onTimeout: () => null);
 
-    await Future.delayed(const Duration(seconds: 5), () {
-      print("AAA waiting...");  
-    });
+    // await Future.delayed(const Duration(seconds: 5), () {
+    //  print("AAA waiting...");
+    // });
 
     print("AAA waiting for onConversionDataCompleter completed with $result");
 
