@@ -141,7 +141,11 @@ class CustomRouter {
 
     af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true);
 
-    Completer<Map<String, dynamic>?> deepLinkCompleter = Completer<Map<String, dynamic>?>();
+    var result = <String, String>{
+      CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
+    };
+
+
     Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
 
     af.onInstallConversionData((res) {
@@ -150,38 +154,24 @@ class CustomRouter {
 
     af.onDeepLinking((res) {
       print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
-
-      Map<String, String> deep = {
-         "campaign": res.deepLink?.campaign ?? "",
-         "campaign_id": res.deepLink?.campaign ?? ""
-      };
-
-      deepLinkCompleter.complete(deep);
+      result["campaign"] = res.deepLink?.campaign ?? "";
+      result["campaign_id"] = res.deepLink?.campaign ?? "";
     });
 
-    var result = <String, String>{
-      CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
-    };
-
-
-    await Future.wait([onConversionDataCompleter.future, deepLinkCompleter.future])
-    .timeout(duration)
-    .then((value) => {
-      value.forEach((element) {
-        if(element != null) {
-          print("AAA appsflyer loaded in callback: $element");
-          element.forEach((key, value) { 
-              if(value.toString().isNotEmpty) {
-                result[key] = value.toString();
-              }
-          });
-        }
-      })
-    })
-    .catchError((e) {
-      print("AAA resultsFromCallbacks exception $e");
-    });
+    var conversionData = await onConversionDataCompleter.future
+        .timeout(const Duration(seconds: 30), onTimeout: () => null);
   
+    if(conversionData != null) {
+      conversionData.forEach((key, value) { 
+        print("AAA appsflyer data: $key = $value");
+        if(value.toString().isNotEmpty) {
+          result[key] = value.toString();
+        }
+      });
+    } else {
+      print("AAA AF responseFromDeepLink response is null, maybe timed out?");
+    }
+
     return result;
   }
 
