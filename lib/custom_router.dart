@@ -135,7 +135,7 @@ class CustomRouter {
         afDevKey: key,
         appId: appId,
         showDebug: true,
-        timeToWaitForATTUserAuthorization: 0,
+        timeToWaitForATTUserAuthorization: 10,
         disableAdvertisingIdentifier: false,
         disableCollectASA: false));
 
@@ -148,7 +148,13 @@ class CustomRouter {
 
     Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
 
-    af.onInstallConversionData((res) {
+    af.onInstallConversionData((Map<String, dynamic> res) {
+      print("AAA onInstallConversionData called $res");
+      res.forEach((key, value) { 
+        if(value.toString().isNotEmpty) {
+          result[key] = value.toString();
+        }
+      });
       onConversionDataCompleter.complete(res);
     });
 
@@ -156,18 +162,14 @@ class CustomRouter {
       print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
       result["campaign"] = res.deepLink?.campaign ?? "";
       result["campaign_id"] = res.deepLink?.campaign ?? "";
+      result["deeplink"] = res.deepLink?.deepLinkValue ?? "";
     });
 
     var conversionData = await onConversionDataCompleter.future
         .timeout(const Duration(seconds: 30), onTimeout: () => null);
   
     if(conversionData != null) {
-      conversionData.forEach((key, value) { 
-        print("AAA appsflyer data: $key = $value");
-        if(value.toString().isNotEmpty) {
-          result[key] = value.toString();
-        }
-      });
+      print("AAA appsflyer conversionData: $conversionData");
     } else {
       print("AAA AF responseFromDeepLink response is null, maybe timed out?");
     }
