@@ -31,8 +31,8 @@ enum CollectableFields {
   media_source,       // +
   advertising_id,    // +  advertising_id? was ad_id
   adset_id,          // +
-  // campaign_id,       // +
-  // campaign,          // +
+  campaign_id,       // +
+  campaign,          // +
   appsflyer_id,      // +
   battery_level,      // +
   charging,           // +

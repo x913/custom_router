@@ -128,24 +128,24 @@ class CustomRouter {
 
   Future<Map<String, String>?> fetchAppsFlyerData(
       String key, String appId) async {
-    var af = AppsflyerSdk(
-        AppsFlyerOptions(afDevKey: key, 
-        appId: appId, 
-        showDebug: true, 
-        timeToWaitForATTUserAuthorization: 10,
+  
+    var duration = const Duration(seconds: 15);
+
+    var af = AppsflyerSdk(AppsFlyerOptions(
+        afDevKey: key,
+        appId: appId,
+        showDebug: true,
+        timeToWaitForATTUserAuthorization: 0,
         disableAdvertisingIdentifier: false,
         disableCollectASA: false));
 
-    af.initSdk(registerConversionDataCallback: true);
+    af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true);
 
-    Completer<Map<String, dynamic>?> completer =
-        Completer<Map<String, dynamic>?>();
-
-    Completer<Map<String, dynamic>?> deepLinkCompleter =
-        Completer<Map<String, dynamic>?>();
+    Completer<Map<String, dynamic>?> deepLinkCompleter = Completer<Map<String, dynamic>?>();
+    Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
 
     af.onInstallConversionData((res) {
-      completer.complete(res);
+      onConversionDataCompleter.complete(res);
     });
 
     af.onDeepLinking((res) {
@@ -158,45 +158,26 @@ class CustomRouter {
 
       deepLinkCompleter.complete(deep);
     });
-
-    var responseFromAppsFlyerConversion = await completer.future
-        .timeout(const Duration(seconds: 5), onTimeout: () => null);
-
-
-    var responseFromDeepLink = await deepLinkCompleter.future
-      .timeout(const Duration(seconds: 5), onTimeout: () => null);
-
-    appsUID = await af.getAppsFlyerUID() ?? "";
+    
+    var resultsFromCallbacks = await Future.wait([onConversionDataCompleter.future, deepLinkCompleter.future])
+      .timeout(duration);
 
     var result = <String, String>{
-      // we always needs appsflyerUid
-      CollectableFields.appsflyer_id.asString(): appsUID
+      CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
     };
 
-    if(responseFromDeepLink != null) {
-      responseFromDeepLink.forEach((key, value) { 
-        print("AAA appsflyer deeplink data: $key = $value");
-        result[key] = value;
-      });
-    } else {
-       print("AAA AF responseFromDeepLink response is null, maybe timed out?");
-    }
-
-    if (responseFromAppsFlyerConversion != null) {
-      responseFromAppsFlyerConversion.forEach((key, value) {
-        print("AAA appsflyer data: $key = $value");
-        for (var collectableKey in CollectableFields.values) {
-          if (key == collectableKey.asString()) {
-            result[collectableKey.asString()] = value;
-            // break;
-          }
+    resultsFromCallbacks.forEach((element) {
+        if(element != null) {
+          print("AAA appsflyer loaded in callback: $element");
+          element.forEach((key, value) { 
+            if(value.toString().isNotEmpty) {
+              result[key] = value.toString();
+            }
+          });
         }
-      });
-    } else {
-      print(
-          "AAA AF onInstallConversionData response is null, maybe timed out?");
-    }
+    });
 
+  
     return result;
   }
 
@@ -357,7 +338,6 @@ class CustomRouter {
       // print("AAA userAgent $userAgent");
       // print("AAA webViewUserAgent $webViewUserAgent");
 
-
       int index = ua.indexOf('Mobile');
       var version = "Version/13.0.3";
       var safari = "Safari/604.1";
@@ -441,16 +421,16 @@ class CustomRouter {
   }
 
   Future<void> initializeTransparancyFramework() async {
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       try {
         final TrackingStatus status =
-        await AppTrackingTransparency.trackingAuthorizationStatus;
+            await AppTrackingTransparency.trackingAuthorizationStatus;
 
         if (status == TrackingStatus.notDetermined) {
           print("AAA status not determined");
           await Future.delayed(const Duration(milliseconds: 1000));
           final TrackingStatus status =
-          await AppTrackingTransparency.requestTrackingAuthorization();
+              await AppTrackingTransparency.requestTrackingAuthorization();
         }
       } on PlatformException {
         print("AAA platform exception thrown");
