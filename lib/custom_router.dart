@@ -158,25 +158,29 @@ class CustomRouter {
 
       deepLinkCompleter.complete(deep);
     });
-    
-    var resultsFromCallbacks = await Future.wait([onConversionDataCompleter.future, deepLinkCompleter.future])
-      .timeout(duration);
 
     var result = <String, String>{
       CollectableFields.appsflyer_id.asString(): await af.getAppsFlyerUID() ?? ""
     };
 
-    resultsFromCallbacks.forEach((element) {
+
+    await Future.wait([onConversionDataCompleter.future, deepLinkCompleter.future])
+    .timeout(duration)
+    .then((value) => {
+      value.forEach((element) {
         if(element != null) {
           print("AAA appsflyer loaded in callback: $element");
           element.forEach((key, value) { 
-            if(value.toString().isNotEmpty) {
-              result[key] = value.toString();
-            }
+              if(value.toString().isNotEmpty) {
+                result[key] = value.toString();
+              }
           });
         }
+      })
+    })
+    .catchError((e) {
+      print("AAA resultsFromCallbacks exception $e");
     });
-
   
     return result;
   }
