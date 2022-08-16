@@ -154,9 +154,9 @@ class CustomRouter {
 
     // Map<String, dynamic> 
     af.onInstallConversionData((res) {
-      print("AAA onInstallConversionData called $res, data: ${res["data"]}");
-      
-      var data = res?['data'];
+      print("AAA onInstallConversionData called $res, data: ${res["payload"]}");
+
+      var data = res?['payload'];
       data.forEach((key, value) {
         for (var collectableKey in CollectableFields.values) {
           if (key == collectableKey.asString() && value.toString().isNotEmpty) {
