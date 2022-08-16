@@ -134,7 +134,7 @@ class CustomRouter {
   Future<Map<String, String>?> fetchAppsFlyerData(
       String key, String appId) async {
   
-    var duration = const Duration(seconds: 15);
+    var duration = const Duration(seconds: 30);
 
 
     Completer<Map<String, dynamic>?> onConversionDataCompleter = Completer<Map<String, dynamic>?>();
@@ -152,6 +152,16 @@ class CustomRouter {
         // disableCollectASA: true
         ));
 
+    af.onInstallConversionData((Map<String, dynamic> res) {
+      print("AAA onInstallConversionData called $res");
+      res.forEach((key, value) { 
+        if(value.toString().isNotEmpty) {
+          result[key] = value.toString();
+        }
+      });
+      onConversionDataCompleter.complete(res);
+    });
+
     af.onDeepLinking((res) {
       print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
       result["campaign"] = res.deepLink?.campaign ?? "";
@@ -163,25 +173,19 @@ class CustomRouter {
       print("AAA onAppOpenAttribution called $res");
     });
 
-    af.onInstallConversionData((Map<String, dynamic> res) {
-      print("AAA onInstallConversionData called $res");
-      res.forEach((key, value) { 
-        if(value.toString().isNotEmpty) {
-          result[key] = value.toString();
-        }
-      });
-      onConversionDataCompleter.complete(res);
-    });
-
     var status = await af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
 
     print("AAA sdk was init $status");
 
     result[CollectableFields.appsflyer_id.asString()] =  await af.getAppsFlyerUID() ?? "";    
 
+    print("AAA waiting for onConversionDataCompleter...");
+
     var conversionData = await onConversionDataCompleter.future
         .timeout(duration, onTimeout: () => null);
-  
+
+    print("AAA waiting for onConversionDataCompleter completed");
+
     if(conversionData != null) {
       print("AAA appsflyer conversionData: $conversionData");
     } else {
