@@ -159,8 +159,8 @@ class CustomRouter {
     af.onInstallConversionData((res) {
       if(isConversionHandled) {
         print("AAA onInstallConversionData already handled");
-        isConversionHandled = true;
       } else {
+        isConversionHandled = true;
         print("AAA onInstallConversionData called $res, data: ${res["payload"]}");
           var data = res?['payload'];
           print("AAA enumerating conversion data");
