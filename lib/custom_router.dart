@@ -159,10 +159,15 @@ class CustomRouter {
       var data = res?['payload'];
       print("AAA enumerating conversion data");
       data.forEach((key, value) {
-        for (var collectableKey in CollectableFields.values) {
-          print("AAA enum: $key vs ${collectableKey.asString()} with value of ${value.toString()}");
-          if (key == collectableKey.asString() && value.toString().isNotEmpty) {
-            result[collectableKey.asString()] = value;
+        if(value == null) {
+          print("AAA enum searching cancelled for $key, value is null");
+        } else {
+          print("AAA enum searching for $key in collectable fields with value of ${value.toString()}");
+          for (var collectableKey in CollectableFields.values) {
+            if (key.toString() == collectableKey.asString() && value.toString().isNotEmpty) {
+              result[collectableKey.asString()] = value;
+              break;
+            }
           }
         }
       });
