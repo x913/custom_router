@@ -44,8 +44,11 @@ enum CollectableFields {
   uuid,               // +
 
   af_adset_id,
+
   atributionId,
   adId, 
-  adgroupId
+  adgroupId,
+
+ 
 
 }

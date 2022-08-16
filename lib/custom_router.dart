@@ -158,20 +158,35 @@ class CustomRouter {
 
       var data = res?['payload'];
       data.forEach((key, value) {
+        print("AAA enumerating conversion data");
         for (var collectableKey in CollectableFields.values) {
           if (key == collectableKey.asString() && value.toString().isNotEmpty) {
             result[collectableKey.asString()] = value;
           }
         }
+        print("AAA enumerating completed: $result");
       });
-      // onConversionDataCompleter.complete(res);
     });
 
     af.onDeepLinking((res) {
       print("AAA onDeepLinking called ${res.deepLink?.campaignId ?? "null"}");
-      result["campaign"] = res.deepLink?.campaign ?? "";
-      result["campaign_id"] = res.deepLink?.campaign ?? "";
-      result["deeplink"] = res.deepLink?.deepLinkValue ?? "";
+
+      var campaign = res.deepLink?.campaign ?? "";
+      var deepLinkValue = res.deepLink?.deepLinkValue ?? "";
+      var campaignId = res.deepLink?.campaignId ?? "";
+
+      if(campaign.isNotEmpty) {
+        result["campaign"] = campaign;
+      }
+
+      if(deepLinkValue.isNotEmpty) {
+        result["deepLinkValue"] = deepLinkValue;
+      }
+
+      if(campaignId.isNotEmpty) {
+        result["campaignId"] = campaignId;
+      }
+ 
     });
 
     af.onAppOpenAttribution((res) {
