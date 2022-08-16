@@ -159,6 +159,10 @@ class CustomRouter {
       result["deeplink"] = res.deepLink?.deepLinkValue ?? "";
     });
 
+    af.onAppOpenAttribution((res) {
+      print("AAA onAppOpenAttribution called $res");
+    });
+
     af.onInstallConversionData((Map<String, dynamic> res) {
       print("AAA onInstallConversionData called $res");
       res.forEach((key, value) { 
