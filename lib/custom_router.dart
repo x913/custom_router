@@ -195,13 +195,7 @@ class CustomRouter {
 
     await Future.delayed(const Duration(seconds: 5));
 
-    print("AAA waiting for onConversionDataCompleter completed");
-
-    // if(conversionData != null) {
-    //   print("AAA appsflyer conversionData: $conversionData");
-    // } else {
-    //   print("AAA appsflyer conversionData is null, maybe timed out?");
-    // }
+    print("AAA waiting for onConversionDataCompleter completed with $result");
 
     return result;
   }
