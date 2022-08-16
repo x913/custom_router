@@ -152,14 +152,15 @@ class CustomRouter {
         // disableCollectASA: true
         ));
 
-    af.onInstallConversionData((Map<String, dynamic> res) {
+    // Map<String, dynamic> 
+    af.onInstallConversionData((res) {
       print("AAA onInstallConversionData called $res");
       res.forEach((key, value) { 
         if(value.toString().isNotEmpty) {
           result[key] = value.toString();
         }
       });
-      onConversionDataCompleter.complete(res);
+      // onConversionDataCompleter.complete(res);
     });
 
     af.onDeepLinking((res) {
@@ -173,24 +174,34 @@ class CustomRouter {
       print("AAA onAppOpenAttribution called $res");
     });
 
-    var status = await af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true, registerOnAppOpenAttributionCallback: true);
+    var status = await af.initSdk(
+      registerConversionDataCallback: true, 
+      registerOnDeepLinkingCallback: true, 
+      registerOnAppOpenAttributionCallback: true
+    );
+
+    af.enableFacebookDeferredApplinks(true);
 
     print("AAA sdk was init $status");
 
-    result[CollectableFields.appsflyer_id.asString()] =  await af.getAppsFlyerUID() ?? "";    
+    // appsUID needed for onesignal
+    appsUID = await af.getAppsFlyerUID() ?? "";  
+    result[CollectableFields.appsflyer_id.asString()] = appsUID;
 
     print("AAA waiting for onConversionDataCompleter...");
 
-    var conversionData = await onConversionDataCompleter.future
-        .timeout(duration, onTimeout: () => null);
+    // var conversionData = await onConversionDataCompleter.future
+    //     .timeout(duration, onTimeout: () => null);
+
+    await Future.delayed(const Duration(seconds: 5));
 
     print("AAA waiting for onConversionDataCompleter completed");
 
-    if(conversionData != null) {
-      print("AAA appsflyer conversionData: $conversionData");
-    } else {
-      print("AAA appsflyer conversionData is null, maybe timed out?");
-    }
+    // if(conversionData != null) {
+    //   print("AAA appsflyer conversionData: $conversionData");
+    // } else {
+    //   print("AAA appsflyer conversionData is null, maybe timed out?");
+    // }
 
     return result;
   }
