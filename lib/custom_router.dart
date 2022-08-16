@@ -136,8 +136,8 @@ class CustomRouter {
         appId: appId,
         showDebug: true,
         timeToWaitForATTUserAuthorization: 10,
-        disableAdvertisingIdentifier: false,
-        disableCollectASA: false));
+        disableAdvertisingIdentifier: true,
+        disableCollectASA: true));
 
     af.initSdk(registerConversionDataCallback: true, registerOnDeepLinkingCallback: true);
 
