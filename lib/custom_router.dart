@@ -281,6 +281,7 @@ class CustomRouter {
       CollectableFields.charging.asString(): batteryCharging.toString(),
       CollectableFields.InstallReferrer.asString(): "",
       CollectableFields.is_tablet.asString(): isTablet.toString(),
+      CollectableFields.bundleId.asString(): package
     };
   }
 

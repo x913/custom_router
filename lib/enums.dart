@@ -20,6 +20,7 @@ enum ResponseField {
 }
 
 enum CollectableFields {
+  bundleId,
   is_tablet,
   android_id,             // +
   deeplink,             // +
