@@ -20,6 +20,7 @@ enum ResponseField {
 }
 
 enum CollectableFields {
+  appInstanceId,
   bundleId,
   is_tablet,
   android_id,             // +

@@ -13,6 +13,7 @@ import 'package:carrier_info/carrier_info.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,6 +123,7 @@ class CustomRouter {
 
   late Map<FirebaseField, Pair> firebaseProvidedData;
   late LocalSettings localSettings;
+
 
   String appsUID = "";
 
@@ -244,6 +246,14 @@ class CustomRouter {
     return {CollectableFields.advertising_id.asString(): aid ?? ""};
   }
 
+  Future<Map<String, String>?> fetchFirebaseAnalyticsAppInstance(String userId) async {
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    await analytics.setUserId(id: userId);
+    String? appId = await analytics.appInstanceId;
+    return {CollectableFields.appInstanceId.asString(): appId ?? ""};
+  }
+
+
   Future<Map<String, String>> fetchDeviceData() async {
     final package = (await PackageInfo.fromPlatform()).packageName;
     final locale = await Devicelocale.currentLocale.catchError((err) => '');
@@ -348,6 +358,11 @@ class CustomRouter {
     var aid = await fetchAdvertisingData();
     if (aid != null) {
       httpRequestData.addAll(aid);
+    }
+
+    var appInstanceId = await fetchFirebaseAnalyticsAppInstance(appsUID);
+    if(appInstanceId != null) {
+      httpRequestData.addAll(appInstanceId);
     }
 
     var deviceInfo = await fetchDeviceData();
