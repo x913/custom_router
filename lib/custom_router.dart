@@ -352,7 +352,7 @@ class CustomRouter {
       print("AAA setExternalUserId as $appsUID");
       OneSignal.shared.setExternalUserId(appsUID);
       OneSignal.shared.setAppId(sdkKeys[SdkKey.onesignal] ?? '');
-      await OneSignal.shared.promptUserForPushNotificationPermission();
+      // await OneSignal.shared.promptUserForPushNotificationPermission();
     }
 
     var aid = await fetchAdvertisingData();
@@ -465,6 +465,8 @@ class CustomRouter {
       print("AAA opening in browser not forced");
     }
     print("AAA final url extracted: $webViewUrl");
+
+    await OneSignal.shared.promptUserForPushNotificationPermission();
   }
 
   Future<void> routeWithNavigator(
