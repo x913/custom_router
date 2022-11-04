@@ -466,7 +466,7 @@ class CustomRouter {
     }
     print("AAA final url extracted: $webViewUrl");
 
-    await OneSignal.shared.promptUserForPushNotificationPermission();
+    // await OneSignal.shared.promptUserForPushNotificationPermission();
   }
 
   Future<void> routeWithNavigator(
@@ -485,6 +485,7 @@ class CustomRouter {
         (route) => false,
       );
     } else {
+      await OneSignal.shared.promptUserForPushNotificationPermission();
       navigator.pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => webViewBuilder(url, userAgent)),
           (router) => false);
