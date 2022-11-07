@@ -23,6 +23,7 @@ dependencies:
   firebase_database: 9.0.13
   firebase_analytics: 9.3.3
   # firebase_core_platform_interface: 4.4.0
+  firebase_core_platform_interface: 4.5.1
   shared_preferences: ^2.0.15
   package_info_plus: ^1.4.2
   battery_plus: ^2.1.3
